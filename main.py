@@ -11,29 +11,18 @@ letters = [
     "./templates/letter_2.txt",
     "./templates/letter_3.txt"
 ]
+today = dt.datetime.now()
+today_tuple = (today.month, today.day)
 #Get a random letter from the given list
 random_letter = choice(letters)
 #iterate from the people list
-for (index, row) in people.iterrows():
-    #Getting the values from each person
-    name = row["name"]
-    email = row["email"]
-    year = row["year"]
-    month = row["month"]
-    day = row["day"]
-    #Construct the date time obj from the given info
-    person_b_date =  dt.datetime(year=year, month=month, day=day)
-    #Check wether the current date match with the current person bd date
-    if person_b_date.weekday() == dt.datetime.now().weekday():
-        #Open the letter file
-        with open( random_letter ) as letter:
+
+#Other way
+data = {(data_row["month"], data_row["day"]): data_row for (index, data_row) in people.iterrows()}
+if today_tuple in data:
+    birthday_person = data[today_tuple]
+    with open( random_letter ) as letter:
             #Replace the current chosen letter name with the actual person name
-            letter_str = letter.read().replace("[NAME]", name)
+            letter_str = letter.read().replace("[NAME]", birthday_person["name"])
             #Send the mail
-            send_mail(email, letter_str)
-
-
-
-
-
-
+            send_mail(birthday_person["email"], letter_str)
